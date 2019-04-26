@@ -1,17 +1,24 @@
 <template>
   <div class="hello">
     <header>
-      <el-dropdown @command="handleClick">
+      <el-dropdown @command="bgSelect">
+        <span class="el-dropdown-link">
+          {{nowMsg.bgChoose}}<i class="el-icon-arrow-down el-icon--right"></i>
+        </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item command="0">竖向照片</el-dropdown-item>
+          <el-dropdown-item command="1">横向照片</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+      <el-dropdown @command="nameSelect">
         <span class="el-dropdown-link">
           {{bgChoose}}<i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="0">横向照片</el-dropdown-item>
-          <el-dropdown-item command="1">竖向照片</el-dropdown-item>
+          <el-dropdown-item v-for="(item, index) in msg" :key="index" :command=index>{{item[1]}}</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </header>
-    <el-button>默认按钮</el-button>
     <canvas id="canvas" width="3508" height="2480"></canvas>
   </div>
 </template>
@@ -26,17 +33,25 @@ export default {
       bgImg: [
         {
           name: '竖向照片',
-          url: 'bgL.png'
+          url: 'bgR.png'
         },
         {
           name: '横向照片',
-          url: 'bgR.png'
+          url: 'bgL.png'
         }
       ],
       imgLR: '竖向照片',
-      msg: 'Welcome to Your Vue.js App',
       ctx: null,
-      cardbg: 'bgL.png'
+      cardbg: 'bgL.png',
+      msg: [],
+      point: {
+        name: [270, 485]
+      },
+      nowMsg: {
+        bgChoose: '竖向照片',
+        cardbg: 'bgL.png',
+        name: ''
+      }
     }
   },
   mounted() {
@@ -44,9 +59,27 @@ export default {
     this.initRender()
   },
   methods: {
-    handleClick(e, s) {
+    draw() {
+      this.drawText({text: this.nowMsg.name, point: this.point.name})
+    },
+    drawText({
+      text, point, textAlign = 'center', fontsize = 55, color = '#F78C66'
+    }) {
+      this.ctx.font = `${fontsize}px 微软雅黑`
+      this.ctx.textAlign = textAlign
+      this.ctx.textBaseline = 'bottom'
+      this.ctx.fillStyle = color
+      this.ctx.fillText(text, point[0], point[1])
+      this.ctx.closePath()
+    },
+    nameSelect(e) {
+      this.nowMsg.name = this.msg[e][1]
+      this.setBg()
+    },
+    bgSelect(e, s) {
+      this.nowMsg.bgChoose = this.bgImg[e].name
+      this.nowMsg.cardbg = this.bgImg[e].url
       this.setBg(e)
-      console.log(e, s, 'jdidi')
     },
     initRender() {
       const canvas = document.getElementById('canvas')
@@ -56,20 +89,31 @@ export default {
     setBg(wh = 0) {
       if (wh > 1 || wh < 0) wh = 0
       var img = new Image()
-      img.src = `static/img/${this.bgImg[wh].url}`
+      img.src = `static/img/${this.nowMsg.cardbg}`
       img.onload = function() {
         this.ctx.drawImage(img, 0, 0, 3508, 2480)
+        this.draw()
       }.bind(this)
     },
     getData() {
       axios.get('http://127.0.0.1:3000/honor',
         {
           params: {
-            name: '张建新'
+            name: '刘平章'
           }
         }
       ).then((res) => {
         console.log(res.data)
+      })
+      axios.get('http://127.0.0.1:3000/mes',
+        {
+          params: {
+            name: '靳腾华'
+          }
+        }
+      ).then((res) => {
+        console.log(res.data)
+        this.msg = res.data
       })
     }
   }
@@ -98,5 +142,15 @@ a {
 }
 .el-icon-arrow-down {
   font-size: 12px;
+}
+.el-dropdown-link {
+  width: 200px;
+  display: inline-block;
+  height: 75px;
+  font-size: 40px;
+  background: blue;
+  line-height: 75px;
+  text-align: center;
+  color: white;
 }
 </style>
