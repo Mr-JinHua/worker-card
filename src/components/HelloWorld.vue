@@ -19,7 +19,7 @@
         </el-dropdown-menu>
       </el-dropdown>
     </header>
-    <canvas id="canvas" width="3508" height="2480"></canvas>
+    <canvas id="canvas" width="3508" height="2480" @click="canvasCli"></canvas>
   </div>
 </template>
 
@@ -40,12 +40,12 @@ export default {
           url: 'bgL.png'
         }
       ],
-      imgLR: '竖向照片',
+      canvas: null,
       ctx: null,
-      cardbg: 'bgL.png',
       msg: [],
       point: {
-        name: [270, 485]
+        name: [270, 485],
+        partyment: [186, 853]
       },
       nowMsg: {
         bgChoose: '竖向照片',
@@ -59,8 +59,23 @@ export default {
     this.initRender()
   },
   methods: {
+    canvasCli(e) {
+      let box = this.canvas.getBoundingClientRect()
+      let x = box.top
+      let y = box.left
+      console.log(e.clientX - x, e.clientY - y)
+    },
     draw() {
       this.drawText({text: this.nowMsg.name, point: this.point.name})
+      this.drawText({text: 'dian shang zi c', point: this.point.partyment, textAlign: 'left'})
+      this.drawCriti({text: 'jiiijijij'})
+      // drawCritiName()
+    },
+    // drawCritiName({name = '无评论',}) {
+    //   this.drawText({text: name, point: [3704, 1108], textAlign: 'right'})
+    // },
+    drawCriti({text = '无评论', name = '无名字'}) {
+      this.drawText({text: text, point: [100, 100]})
     },
     drawText({
       text, point, textAlign = 'center', fontsize = 55, color = '#F78C66'
@@ -82,8 +97,8 @@ export default {
       this.setBg(e)
     },
     initRender() {
-      const canvas = document.getElementById('canvas')
-      this.ctx = canvas.getContext('2d')
+      this.canvas = document.getElementById('canvas')
+      this.ctx = this.canvas.getContext('2d')
       this.setBg()
     },
     setBg(wh = 0) {
@@ -99,7 +114,7 @@ export default {
       axios.get('http://127.0.0.1:3000/honor',
         {
           params: {
-            name: '刘平章'
+            name: '薛豪'
           }
         }
       ).then((res) => {
@@ -108,7 +123,7 @@ export default {
       axios.get('http://127.0.0.1:3000/mes',
         {
           params: {
-            name: '靳腾华'
+            name: '马征'
           }
         }
       ).then((res) => {

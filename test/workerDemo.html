@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>worker demo</title>
+</head>
+<body>
+<canvas id="can" width="877" height="620" />
+<script type="text/javascript">
+const mycanvas = document.getElementById('can')
+let ctx = mycanvas.getContext('2d')
+var img=new Image();
+    img.src="usedemo.png";
+img.onload = function() {
+	console.log('img.onload')
+   	ctx.drawImage(img, 0, 0, 877, 620);
+   	changeWorker()
+   	drawText('靳腾华', 75, 110)
+}
+
+function drawText(text,x,y){	
+	ctx.font=`16px Georgia`;
+	ctx.textAlign="center";
+	ctx.textBaseline="middle";
+	ctx.fillStyle = 'red';
+	ctx.fillText(text,x,y);
+	ctx.closePath();
+}
+
+function changeWorker(name) {
+	//  [60, 105] [105, 123]
+	console.log('changeWorker')
+	ctx.clearRect(60, 105, 45, 20);
+}
+
+mycanvas.onclick = function(e) {
+	let box = mycanvas.getBoundingClientRect();
+	let x = e.clientX - box.left;
+	let y = e.clientY - box.top;
+	let clickBox = [x,y];
+	console.log(clickBox);
+}
+
+</script>
+</body>
+</html>
