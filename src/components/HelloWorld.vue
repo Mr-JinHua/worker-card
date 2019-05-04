@@ -196,7 +196,7 @@ export default {
         }
         pointArr.push(pointArrItem)
       })
-      if (pointArr.length > 4) {
+      if (pointArr.length > 5) {
         this.drawText({text: '等诸多产品大事记', point: [pointX, pointY + lineHeight * 2], textAlign: 'left', fontSize: 55, color: '#88BF43'})
       }
       pointArr.forEach((item, index) => {
@@ -338,16 +338,22 @@ export default {
     },
     drawDepartments() {
       let departments = this.nowMsg.departments
+
       if (departments.length < 1) {
         this.ctx.fillStyle = '#fff'
         this.ctx.fillRect(180, 800, 1600, 100)
         return
       }
       let txtStr = ''
-      for (let i = departments.length - 1; i > 0; i--) {
-        txtStr += departments[i] + '、'
+      for (let i = departments.length - 1; i >= 0; i--) {
+        if (i === 0) {
+          txtStr += departments[i]
+        } else {
+          txtStr += departments[i] + '、'
+        }
         if (this.ctx.measureText(txtStr).width > 800) break
       }
+      // let newStr = txtStr
       let newStr = txtStr.slice(0, -1)
       newStr += '等部门'
       this.drawText({text: newStr, point: this.point.departments, textAlign: 'left'})
@@ -383,6 +389,7 @@ export default {
         }
       ).then((res) => {
         this.nowMsg.award = res.data
+        console.log(res.data)
         this.drawAward()
       })
       axios.get('http://127.0.0.1:3000/dep',
