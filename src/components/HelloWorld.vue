@@ -359,7 +359,7 @@ export default {
       this.drawText({text: newStr, point: this.point.departments, textAlign: 'left'})
     },
     getData(name) {
-      axios.get('http://127.0.0.1:3000/honor',
+      axios.get('http://10.6.244.89:3000/honor',
         {
           params: {
             name: name
@@ -368,7 +368,7 @@ export default {
       ).then((res) => {
         console.log(res.data)
       })
-      axios.get('http://127.0.0.1:3000/bug',
+      axios.get('http://10.6.244.89:3000/bug',
         {
           params: {
             name: name
@@ -378,10 +378,10 @@ export default {
         this.nowMsg.bug = res.data
         this.drawBug()
       })
-      axios.get('http://127.0.0.1:3000/mes').then((res) => {
+      axios.get('http://10.6.244.89:3000/mes').then((res) => {
         this.msg = res.data
       })
-      axios.get('http://127.0.0.1:3000/awa',
+      axios.get('http://10.6.244.89:3000/awa',
         {
           params: {
             name: name
@@ -392,7 +392,7 @@ export default {
         console.log(res.data)
         this.drawAward()
       })
-      axios.get('http://127.0.0.1:3000/dep',
+      axios.get('http://10.6.244.89:3000/dep',
         {
           params: {
             name: name
