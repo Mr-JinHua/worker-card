@@ -6,14 +6,13 @@ const path = require('path')
 
 module.exports = {
   dev: {
-
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
       'http://localhost:8080': {
         // 我要请求的地址
-        target: 'http://10.6.244.89:3000',  
+        target: 'http://127.0.0.1:3000',  
         //是否跨域
         changeOrigin: true,
         pathRewrite: {
