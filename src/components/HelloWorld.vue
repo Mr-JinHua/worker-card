@@ -30,7 +30,8 @@ import axios from 'axios'
 // import { setTimeout } from 'timers';
 
 function numdays(date) {
-  return parseInt(Math.ceil((new Date() * 1 - new Date(date) * 1) / 86400000 / 365) * 365)
+  // Math.round
+  return parseInt(Math.round((new Date() * 1 - new Date(date) * 1) / 86400000 / 365) * 365)
 }
 function liveThrough(date) {
   let workdate = new Date(date) * 1
@@ -81,7 +82,7 @@ export default {
         date: [710, 625],
         department: [320, 760],
         departments: [450, 895],
-        live: [352, 1030],
+        live: [352, 935],
         bug: [810, 1680],
         honor: [352, 1320],
         self: [352, 1430],
@@ -164,52 +165,28 @@ export default {
     drawLive() {
       let lineHeight = 90
       let liveArr = liveThrough(this.nowMsg.date)
-      let point = this.point.live
-      console.log(liveArr)
-      let pointArr = []
-      let pointX = point[0]
-      let pointY = point[1]
+      let liveStr = []
+      let newStr = ''
+      let point = [...this.point.live]
+      console.log(point)
       liveArr.push('等诸多产品大事记')
       liveArr.forEach((item, index) => {
-        let pointArrItem = []
-        switch (index) {
-          case 0:
-            pointArrItem[0] = pointX
-            pointArrItem[1] = pointY
-            break
-          case 1:
-            pointArrItem[0] = pointX + 550
-            pointArrItem[1] = pointY
-            break
-          case 2:
-            pointArrItem[0] = pointX
-            pointArrItem[1] = pointY + lineHeight
-            break
-          case 3:
-            pointArrItem[0] = pointX + 320
-            pointArrItem[1] = pointY + lineHeight
-            break
-          case 4:
-            pointArrItem[0] = pointX + 720
-            pointArrItem[1] = pointY + lineHeight
-            break
+        for (let i in item) {
+          if (this.ctx.measureText(newStr).width > 1200) {
+            liveStr.push(newStr)
+            newStr = ''
+          }
+          newStr += item[i]
+          console.log(newStr)
         }
-        pointArr.push(pointArrItem)
+        if (index !== (liveArr.length - 1) && index !== (liveArr.length - 2)) newStr += '、'
       })
-      if (pointArr.length > 5) {
-        this.drawText({text: '等诸多产品大事记', point: [pointX, pointY + lineHeight * 2], textAlign: 'left', fontSize: 55, color: '#88BF43'})
-      }
-      pointArr.forEach((item, index) => {
-        if (index > 0 && index !== 2) {
-          let filterPoint = []
-          filterPoint[0] = item[0] - 32
-          filterPoint[1] = item[1]
-          this.drawText({text: '、', point: filterPoint, textAlign: 'left', fontSize: 55, color: '#88BF43'})
-        }
-        this.drawText({text: liveArr[index], point: item, textAlign: 'left', fontSize: 55, color: '#88BF43'})
-        if (index === (pointArr.length)) {
-          this.drawText({text: liveArr[index], point: item, textAlign: 'left', fontSize: 55, color: '#88BF43'})
-        }
+      liveStr.push(newStr)
+      console.log(liveStr)
+      liveStr.forEach((item, index) => {
+        console.log(item, point)
+        point[1] += lineHeight
+        this.drawText({text: item, point: point, textAlign: 'left', color: '#88bf43'})
       })
     },
     drawAward() {
